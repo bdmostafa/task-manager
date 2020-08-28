@@ -1,0 +1,12 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.multiColorText {
+    background-image: linear-gradient(to left, rgba(238, 20, 238, 0.445), rgba(76, 0, 130, 0.87), green, rgba(0, 0, 255, 0.89), rgba(201, 132, 3, 0.842), red);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-family: 'Lobster', cursive;
+}

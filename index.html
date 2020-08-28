@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+        integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+        crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Task Management App | Vanilla JS</title>
+</head>
+
+<body>
+    <header class="container text-center">
+        <h1>Your <span class="multiColorText">Task</span> Manager </h1>
+    </header>
+
+    <main class="container">
+        <div class="form-area">
+            <form>
+                <div class="form-group row">
+                    <label for="subject" class="col-sm-2 col-form-label">Subject</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="subject" placeholder="Enter your task name">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="description" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="description" placeholder="Enter your task details"
+                            rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="assignedTo" class="col-sm-2 col-form-label">Assigned By</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="assignedTo"
+                            placeholder="Enter name whom you have to assign to">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="start" class="col-sm-2 col-form-label">Start</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" id="start"
+                            placeholder="Enter name whom you have to assign to">
+                    </div>
+                    <label for="end" class="col-sm-2 col-form-label">End</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" id="end"
+                            placeholder="Enter name whom you have to assign to">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">Priority</div>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <input class="form-check-input" name="status" type="radio" id="high">
+                            <label class="form-check-label mr-5" for="high">
+                                High
+                            </label>
+                            <input class="form-check-input" name="status" type="radio" id="medium">
+                            <label class="form-check-label mr-5" for="medium">
+                                Medium
+                            </label>
+                            <input class="form-check-input" name="status" type="radio" id="low">
+                            <label class="form-check-label mr-5" for="low">
+                                Low
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2">Status</div>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <input class="form-check-input" name="status" type="radio" id="New">
+                            <label class="form-check-label mr-5" for="New">
+                                New
+                            </label>
+                            <input class="form-check-input" name="status" type="radio" id="In Progress">
+                            <label class="form-check-label mr-5" for="In Progress">
+                                In Progress
+                            </label>
+                            <input class="form-check-input" name="status" type="radio" id="Completed">
+                            <label class="form-check-label mr-5" for="Completed">
+                                Completed
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Add Task</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="display-task-area">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Assigned To</th>
+                    <th scope="col">Completed (%)</th>
+                    <th scope="col">Modified On</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Web</td>
+                    <td><span class="badge badge-pill badge-primary">High</span></td>
+                    <td>New</td>
+                    <td>10-2-20</td>
+                    <td>Mostafa</td>
+                    <td>100% 
+                        <div class="progress">
+                        <div class="progress-bar-striped bg-success" role="progressbar" style="width: 75%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
+                    <td>10-2-20</td>
+                    <td><a href="#" class="badge badge-info">Edit</a></td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+
+    </main>
+
+    <footer class="text-center">
+        <p>Developed by <span><a href="https://github.com/bdmostafa" target="_blank">Mostafa</a> </span> </p>
+    </footer>
+    <script src="app.js"></script>
+</body>
+
+</html>
