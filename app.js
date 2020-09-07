@@ -35,6 +35,7 @@ const StorageConroller = (function () {
 const UIController = (function () {
     // Create object for the selectors
     const selectors = {
+        titleInput: '.title-input',
         taskBody: '#task-body',
         addTask: '.add-btn',
         updateTask: '.update-btn',
@@ -45,16 +46,24 @@ const UIController = (function () {
         getSelectors() {
             return selectors
         },
-        showUpdateState(){
-            console.log('ok')
+        showUpdateState() {
             document.querySelector(selectors.addTask).style.display = 'none';
             document.querySelector(selectors.updateTask).style.display = 'block';
             document.querySelector(selectors.backBtn).style.display = 'block';
         },
-        showBackState(){
+        showBackState() {
             document.querySelector(selectors.addTask).style.display = 'block';
             document.querySelector(selectors.updateTask).style.display = 'none';
             document.querySelector(selectors.backBtn).style.display = 'none';
+        },
+        getTitleTask() {
+            return document.querySelector(selectors.titleInput).value;
+        },
+        showAlert(msg, className) {
+            console.log(msg, className)
+        },
+        clearField() {
+
         },
         populateTask(tasks) {
             // console.log(tasks);
@@ -93,17 +102,52 @@ const UIController = (function () {
 const AppController = (function (Task, UI, Storage) {
     // console.log(Task.getTasks());
 
-    // Getting tasks from data center
-    const tasks = Task.getTasks();
+    // Load Event listeners
+    const loadEventListeners = () => {
+        const selectors = UI.getSelectors();
 
-    // Populating tasks in UI
-    UI.populateTask(tasks)
+        // Register all the functions of click event listeners
+        document.querySelector(selectors.addTask).addEventListener('click', addNewTask);
+        // document.querySelector(selectors.updateTask).addEventListener('click', UpdateTask);
+        // document.querySelector(selectors.backBtn).addEventListener('click', backDefault);
+        // document.querySelector(selectors.addTask).addEventListener('click', addTask);
+    }
+    function addNewTask(e) {
+        e.preventDefault();
+        const titleTask = UI.getTitleTask();
+        // console.log(titleTask);
 
-    // Show edit state
-    // UI.showUpdateState();
+        if (titleTask.trim() === '') {
+            UI.showAlert('Oops... Title must not be an empty. Please try again!', 'warning');
+        } else {
+            // Update to data center
 
-    // Show back state
-    // UI.showBackState();
+            // Update to UI
+        }
+    }
+
+    return {
+        init() {
+            // Getting tasks from data center
+            const tasks = Task.getTasks();
+
+            // Populating tasks in UI
+            UI.populateTask(tasks)
+
+            // Show edit state
+            UI.showUpdateState();
+
+            // Show back state
+            UI.showBackState();
+
+            // Call event listeners
+            loadEventListeners();
+        }
+    }
+
 
 })(TaskController, UIController, StorageConroller)
 // Arguments pass for better way because update/change make easier in future
+
+// App entry point
+AppController.init();
