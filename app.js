@@ -3,13 +3,13 @@ const TaskController = (function () {
     let data = {
         tasks: [
             {
-                id: 0,
+                id: 1,
                 title: 'task1',
                 completed: false
             },
             {
-                id: 0,
-                title: 'task1',
+                id: 2,
+                title: 'task2',
                 completed: false
             }
         ]
@@ -84,11 +84,36 @@ const UIController = (function () {
         clearFields() {
             document.querySelector(selectors.titleInput).value = '';
         },
-        populateTask(tasks) {
-            // console.log(tasks);
+        populateTask(task) {
             let taskResult = '';
+            taskResult += `
+                    <tr>
+                        <th scope="row">${task.id}</th>
+                        <td>${task.title}</td>
+                        <td><span class="badge badge-pill badge-primary">High</span></td>
+                        <td>${task.completed}</td>
+                        <td>10-2-20</td>
+                        <td>Mostafa</td>
+                        <td>
+                            <div class="progress">
+                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">50%</span> </div>
+                        </div>
+                        </td>
+                        <td>10-2-20</td>
+                        <td>
+                            <a href="#" class="badge badge-info">Update</a>
+                            <a href="#" class="badge badge-danger">Delete</a>
+                        </td>
+                    </tr>
+                `
+            // Insert taskResult after all the elements before end of the target div (taskBody)
+            document.querySelector(selectors.taskBody).insertAdjacentHTML("beforeend", taskResult);
+        },
+        populateAllTask(tasks) {
+            // console.log(tasks);
+            let tasksResult = '';
             tasks.forEach(task => {
-                taskResult += `
+                tasksResult += `
                     <tr>
                         <th scope="row">${task.id}</th>
                         <td>${task.title}</td>
@@ -109,7 +134,7 @@ const UIController = (function () {
                     </tr>
                 `
             });
-            document.querySelector(selectors.taskBody).innerHTML = taskResult;
+            document.querySelector(selectors.taskBody).innerHTML = tasksResult;
         }
     }
 })()
@@ -147,6 +172,7 @@ const AppController = (function (Task, UI, Storage) {
             UI.clearFields();
 
             // Update to UI
+            UI.populateTask(task)
         }
     }
 
@@ -156,7 +182,7 @@ const AppController = (function (Task, UI, Storage) {
             const tasks = Task.getTasks();
 
             // Populating tasks in UI
-            UI.populateTask(tasks)
+            UI.populateAllTask(tasks)
 
             // Show edit state
             UI.showUpdateState();
