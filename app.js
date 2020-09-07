@@ -22,15 +22,40 @@ const TaskController = (function () {
     }
 })()
 
+
+
 // Function to local storage
 const StorageConroller = (function () {
 
 })()
 
+
+
 // Function to connect with task data into UI DOM
 const UIController = (function () {
+    // Create object for the selectors
+    const selectors = {
+        taskBody: '#task-body',
+        addTask: '.add-btn',
+        updateTask: '.update-btn',
+        backBtn: '.back-btn'
+    }
 
     return {
+        getSelectors() {
+            return selectors
+        },
+        showUpdateState(){
+            console.log('ok')
+            document.querySelector(selectors.addTask).style.display = 'none';
+            document.querySelector(selectors.updateTask).style.display = 'block';
+            document.querySelector(selectors.backBtn).style.display = 'block';
+        },
+        showBackState(){
+            document.querySelector(selectors.addTask).style.display = 'block';
+            document.querySelector(selectors.updateTask).style.display = 'none';
+            document.querySelector(selectors.backBtn).style.display = 'none';
+        },
         populateTask(tasks) {
             // console.log(tasks);
             let taskResult = '';
@@ -56,10 +81,12 @@ const UIController = (function () {
                     </tr>
                 `
             });
-            document.querySelector('tbody').innerHTML = taskResult;
+            document.querySelector(selectors.taskBody).innerHTML = taskResult;
         }
     }
 })()
+
+
 
 
 // Function to combine between TaskController and UIController
@@ -71,6 +98,12 @@ const AppController = (function (Task, UI, Storage) {
 
     // Populating tasks in UI
     UI.populateTask(tasks)
+
+    // Show edit state
+    // UI.showUpdateState();
+
+    // Show back state
+    // UI.showBackState();
 
 })(TaskController, UIController, StorageConroller)
 // Arguments pass for better way because update/change make easier in future
