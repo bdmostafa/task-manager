@@ -2,16 +2,16 @@
 const TaskController = (function () {
     let data = {
         tasks: [
-            // {
-            //     id: 1,
-            //     title: 'task1',
-            //     completed: false
-            // },
-            // {
-            //     id: 2,
-            //     title: 'task2',
-            //     completed: false
-            // }
+            {
+                id: 1,
+                title: 'task1',
+                completed: false
+            },
+            {
+                id: 2,
+                title: 'task2',
+                completed: false
+            }
         ]
     };
 
@@ -36,6 +36,20 @@ const TaskController = (function () {
             }
             data = updatedTask;
             return task;
+
+        },
+        completedTask(id) {
+            // Mapping data task to check if id is matched
+            data.tasks = data.tasks.map(task => {
+                if (task.id === id) {
+                    task.completed = true;
+                    return task;
+                } else {
+                    return task;
+                }
+            });
+            // console.log(data.tasks);
+            // data.tasks = updatedTask;
 
         }
     }
@@ -112,8 +126,9 @@ const UIController = (function () {
                         </td>
                         <td>10-2-20</td>
                         <td>
-                            <a href="#" class="badge badge-info">Update</a>
-                            <a href="#" class="badge badge-danger">Delete</a>
+                            <i class="fas fa-edit text-primary"></i>
+                            <i class="fas fa-check-square text-success"></i>
+                            <i class="fas fa-trash-alt text-danger"></i>
                         </td>
                     </tr>
                 `
@@ -146,8 +161,9 @@ const UIController = (function () {
                         </td>
                         <td>10-2-20</td>
                         <td>
-                            <a href="#" class="badge badge-info">Update</a>
-                            <a href="#" class="badge badge-danger">Delete</a>
+                            <i class="fas fa-edit text-primary"></i>
+                            <i class="fas fa-check-square text-success"></i>
+                            <i class="fas fa-trash-alt text-danger"></i>
                         </td>
                     </tr>
                 `
@@ -173,6 +189,7 @@ const AppController = (function (Task, UI, Storage) {
         // document.querySelector(selectors.updateTask).addEventListener('click', UpdateTask);
         // document.querySelector(selectors.backBtn).addEventListener('click', backDefault);
         // document.querySelector(selectors.addTask).addEventListener('click', addTask);
+        document.querySelector(selectors.displayTaskArea).addEventListener('click', completeTask);
     }
     function addNewTask(e) {
         e.preventDefault();
@@ -184,13 +201,21 @@ const AppController = (function (Task, UI, Storage) {
         } else {
             // Update to data center
             const task = Task.addTasks(titleTask);
-            console.log(task);
+            // console.log(task);
 
             // Clear Field
             UI.clearFields();
 
             // Update to UI
             UI.populateTask(task)
+        }
+    }
+
+    function completeTask(e) {
+        if (e.target.classList.contains('fa-check-square')) {
+            // console.log(e.target.parentElement.parentElement.children[0].innerText);
+            const targetId = Number(e.target.parentElement.parentElement.children[0].innerText);
+            Task.completedTask(targetId);
         }
     }
 
