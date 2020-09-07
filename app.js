@@ -1,6 +1,6 @@
 // Function to control task data
 const TaskController = (function () {
-    const data = {
+    let data = {
         tasks: [
             {
                 id: 0,
@@ -18,6 +18,25 @@ const TaskController = (function () {
     return {
         getTasks() {
             return data.tasks;
+        },
+        addTasks(titleTask) {
+            const id = data.tasks.length > 0 ? data.tasks.length : 0
+            const task = {
+                id,
+                title: titleTask,
+                completed: false
+            };
+            // data.tasks.push(task);
+            // console.log(task)
+
+            // Functiona way - ES6 (as like state management)
+            const updatedTask = {
+                ...data,
+                tasks: [...data.tasks, task]
+            }
+            data = updatedTask;
+            return task;
+
         }
     }
 })()
@@ -62,8 +81,8 @@ const UIController = (function () {
         showAlert(msg, className) {
             console.log(msg, className)
         },
-        clearField() {
-
+        clearFields() {
+            document.querySelector(selectors.titleInput).value = '';
         },
         populateTask(tasks) {
             // console.log(tasks);
@@ -121,6 +140,11 @@ const AppController = (function (Task, UI, Storage) {
             UI.showAlert('Oops... Title must not be an empty. Please try again!', 'warning');
         } else {
             // Update to data center
+            const task = Task.addTasks(titleTask);
+            console.log(task);
+
+            // Clear Field
+            UI.clearFields();
 
             // Update to UI
         }
