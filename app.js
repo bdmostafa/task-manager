@@ -2,16 +2,16 @@
 const TaskController = (function () {
     let data = {
         tasks: [
-            {
-                id: 1,
-                title: 'task1',
-                completed: false
-            },
-            {
-                id: 2,
-                title: 'task2',
-                completed: false
-            }
+            // {
+            //     id: 1,
+            //     title: 'task1',
+            //     completed: false
+            // },
+            // {
+            //     id: 2,
+            //     title: 'task2',
+            //     completed: false
+            // }
         ]
     };
 
@@ -54,11 +54,20 @@ const StorageConroller = (function () {
 const UIController = (function () {
     // Create object for the selectors
     const selectors = {
+        displayTaskArea: '.display-task-area',
         titleInput: '.title-input',
         taskBody: '#task-body',
         addTask: '.add-btn',
         updateTask: '.update-btn',
         backBtn: '.back-btn'
+    }
+
+    const displayTaskArea = () => {
+        document.querySelector(selectors.displayTaskArea).style.display = 'block';
+    }
+
+    const hideTaskArea = () => {
+        document.querySelector(selectors.displayTaskArea).style.display = 'none';
     }
 
     return {
@@ -85,6 +94,8 @@ const UIController = (function () {
             document.querySelector(selectors.titleInput).value = '';
         },
         populateTask(task) {
+            // Display task area when new task is added
+            displayTaskArea();
             let taskResult = '';
             taskResult += `
                     <tr>
@@ -110,6 +121,13 @@ const UIController = (function () {
             document.querySelector(selectors.taskBody).insertAdjacentHTML("beforeend", taskResult);
         },
         populateAllTask(tasks) {
+            // Handle display task area
+            if (tasks.length > 0) {
+                displayTaskArea();
+            } else {
+                hideTaskArea();
+            }
+
             // console.log(tasks);
             let tasksResult = '';
             tasks.forEach(task => {
