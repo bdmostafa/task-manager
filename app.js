@@ -5,12 +5,40 @@ const TaskController = (function () {
             {
                 id: 1,
                 title: 'task1',
-                completed: false
+                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+                assignedTo: 'Mostafa',
+                startAt: new Date().toLocaleDateString(),
+                endAt: new Date().toLocaleDateString(),
+                priority: {
+                    high: true,
+                    medium: false,
+                    low: false
+                },
+                status: {
+                    completed: true,
+                    inProgress: false,
+                    isNew: false
+                },
+                completedPercentage: 50
             },
             {
                 id: 2,
                 title: 'task2',
-                completed: false
+                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+                assignedTo: 'Mahumud',
+                startAt: new Date().toLocaleDateString(),
+                endAt: new Date().toLocaleDateString(),
+                priority: {
+                    high: false,
+                    medium: low,
+                    low: false
+                },
+                status: {
+                    completed: false,
+                    inProgress: false,
+                    isNew: true
+                },
+                completedPercentage: 90
             }
         ]
     };
@@ -42,13 +70,13 @@ const TaskController = (function () {
             // Mapping data task to check if id is matched
             data.tasks = data.tasks.map(task => {
                 if (task.id === id) {
-                    task.completed = true;
+                    task.completed = !task.completed;
                     return task;
                 } else {
                     return task;
                 }
             });
-            // console.log(data.tasks);
+            console.log(data.tasks);
             // data.tasks = updatedTask;
 
         }
@@ -84,6 +112,27 @@ const UIController = (function () {
         document.querySelector(selectors.displayTaskArea).style.display = 'none';
     }
 
+    const handlePriority = (task) => {
+        const { high, medium, low } = task.priority;
+        if (high) return 'High'
+        if (medium) return 'Medium'
+        if (low) return 'Low'
+    }
+
+    const handleBadgeColorPriority = (task) => {
+        const { high, medium, low } = task.priority;
+        if (high) return 'primary'
+        if (medium) return 'success'
+        if (low) return 'warning'
+    }
+
+    const handleStatus = (task) => {
+        const { completed, inProgress, isNew } = task.status;
+        if (completed) return 'Completed'
+        if (inProgress) return 'In Progress'
+        if (isNew) return 'New'
+    }
+
     return {
         getSelectors() {
             return selectors
@@ -114,17 +163,16 @@ const UIController = (function () {
             taskResult += `
                     <tr>
                         <th scope="row">${task.id}</th>
-                        <td>${task.title}</td>
-                        <td><span class="badge badge-pill badge-primary">High</span></td>
-                        <td>${task.completed}</td>
-                        <td>10-2-20</td>
-                        <td>Mostafa</td>
+                        <td >${task.title}</td>
+                        <td><span class="badge badge-pill badge-${handleBadgeColorPriority(task)}">${handlePriority(task)}</span></td>
+                        <td>${handleStatus(task)}</td>
+                        <td>${task.endAt}</td>
+                        <td>${task.assignedTo}</td>
                         <td>
                             <div class="progress">
-                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">50%</span> </div>
+                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${task.completedPercentage}%" aria-valuenow="${task.completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${task.completedPercentage}%</span> </div>
                         </div>
                         </td>
-                        <td>10-2-20</td>
                         <td>
                             <i class="fas fa-edit text-primary"></i>
                             <i class="fas fa-check-square text-success"></i>
@@ -136,6 +184,7 @@ const UIController = (function () {
             document.querySelector(selectors.taskBody).insertAdjacentHTML("beforeend", taskResult);
         },
         populateAllTask(tasks) {
+            
             // Handle display task area
             if (tasks.length > 0) {
                 displayTaskArea();
@@ -150,16 +199,15 @@ const UIController = (function () {
                     <tr>
                         <th scope="row">${task.id}</th>
                         <td>${task.title}</td>
-                        <td><span class="badge badge-pill badge-primary">High</span></td>
-                        <td>${task.completed}</td>
-                        <td>10-2-20</td>
-                        <td>Mostafa</td>
+                        <td><span class="badge badge-pill badge-${handleBadgeColorPriority(task)}">${handlePriority(task)}</span></td>
+                        <td>${handleStatus(task)}</td>
+                        <td>${task.endAt}</td>
+                        <td>${task.assignedTo}</td>
                         <td>
                             <div class="progress">
-                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">50%</span> </div>
+                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${task.completedPercentage}%" aria-valuenow="${task.completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${task.completedPercentage}%</span> </div>
                         </div>
                         </td>
-                        <td>10-2-20</td>
                         <td>
                             <i class="fas fa-edit text-primary"></i>
                             <i class="fas fa-check-square text-success"></i>
@@ -167,8 +215,10 @@ const UIController = (function () {
                         </td>
                     </tr>
                 `
+                console.log(task)
             });
             document.querySelector(selectors.taskBody).innerHTML = tasksResult;
+            
         }
     }
 })()
@@ -177,7 +227,7 @@ const UIController = (function () {
 
 
 // Function to combine between TaskController and UIController
-const AppController = (function (Task, UI, Storage) {
+const AppController = ( (Task, UI, Storage) => {
     // console.log(Task.getTasks());
 
     // Load Event listeners
