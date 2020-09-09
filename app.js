@@ -9,35 +9,30 @@ const TaskController = (function () {
                 assignedTo: 'Mostafa',
                 startAt: new Date().toLocaleDateString(),
                 endAt: new Date().toLocaleDateString(),
-                priority: {
-                    high: true,
-                    medium: false,
-                    low: false
-                },
-                status: {
-                    completed: true,
-                    inProgress: false,
-                    isNew: false
-                },
+                priority: 'High',
+                status: 'In Progress',
                 completedPercentage: 50
             },
             {
                 id: 2,
+                title: 'task1',
+                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+                assignedTo: 'Mostafa',
+                startAt: new Date().toLocaleDateString(),
+                endAt: new Date().toLocaleDateString(),
+                priority: 'Low',
+                status: 'New',
+                completedPercentage: 50
+            },
+            {
+                id: 3,
                 title: 'task2',
                 description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mahumud',
                 startAt: new Date().toLocaleDateString(),
                 endAt: new Date().toLocaleDateString(),
-                priority: {
-                    high: false,
-                    medium: low,
-                    low: false
-                },
-                status: {
-                    completed: false,
-                    inProgress: false,
-                    isNew: true
-                },
+                priority: 'Medium',
+                status: 'Completed',
                 completedPercentage: 90
             }
         ]
@@ -47,13 +42,32 @@ const TaskController = (function () {
         getTasks() {
             return data.tasks;
         },
-        addTasks(titleTask) {
-            const id = data.tasks.length > 0 ? data.tasks.length : 0
+        // Destructuring argument taskInfo
+        addTasks({
+            title,
+            description,
+            assignedTo,
+            startAt,
+            endAt,
+            priority,
+            status,
+            completedPercentage
+        }) {
+            // Task id no should be started from 1
+            const id = data.tasks.length > 0 ? data.tasks.length + 1 : 1
             const task = {
+                // When property and value name are the same, avoid naming twice
                 id,
-                title: titleTask,
-                completed: false
+                title,
+                description,
+                assignedTo,
+                startAt,
+                endAt,
+                priority,
+                status,
+                completedPercentage
             };
+
             // data.tasks.push(task);
             // console.log(task)
 
@@ -66,11 +80,14 @@ const TaskController = (function () {
             return task;
 
         },
+        // Function to assign completed task on check icon click event
         completedTask(id) {
             // Mapping data task to check if id is matched
             data.tasks = data.tasks.map(task => {
                 if (task.id === id) {
-                    task.completed = !task.completed;
+                    if (task.status === 'New' || 'In Progress') {
+                        task.status = 'Completed';
+                    }
                     return task;
                 } else {
                     return task;
@@ -84,24 +101,31 @@ const TaskController = (function () {
 })()
 
 
-
-// Function to local storage
+// Function to local storage ========================================================================
 const StorageConroller = (function () {
 
 })()
 
 
 
-// Function to connect with task data into UI DOM
+// Function to connect with task data into UI DOM ============================================================
 const UIController = (function () {
-    // Create object for the selectors
+    // Create object for all the necessary selectors
     const selectors = {
         displayTaskArea: '.display-task-area',
         titleInput: '.title-input',
         taskBody: '#task-body',
         addTask: '.add-btn',
         updateTask: '.update-btn',
-        backBtn: '.back-btn'
+        backBtn: '.back-btn',
+        description: '.description',
+        assignedTo: '.assigned-to',
+        startAt: '.start-date',
+        endAt: '.end-date',
+        priority: 'input[type=radio][name=priority]:checked',
+        status: 'input[type=radio][name=status]:checked',
+        completedPercentage: '.percentage-num'
+
     }
 
     const displayTaskArea = () => {
@@ -112,25 +136,17 @@ const UIController = (function () {
         document.querySelector(selectors.displayTaskArea).style.display = 'none';
     }
 
-    const handlePriority = (task) => {
-        const { high, medium, low } = task.priority;
-        if (high) return 'High'
-        if (medium) return 'Medium'
-        if (low) return 'Low'
+    const handleBadgeColorPriority = (priority) => {
+        // const { high, medium, low } = task.priority;
+        if (priority === 'High') return 'primary'
+        if (priority === 'Medium') return 'success'
+        if (priority === 'Low') return 'warning'
     }
 
-    const handleBadgeColorPriority = (task) => {
-        const { high, medium, low } = task.priority;
-        if (high) return 'primary'
-        if (medium) return 'success'
-        if (low) return 'warning'
-    }
-
-    const handleStatus = (task) => {
-        const { completed, inProgress, isNew } = task.status;
-        if (completed) return 'Completed'
-        if (inProgress) return 'In Progress'
-        if (isNew) return 'New'
+    const handleStyleCompletedStatus = (status) => {
+        if (status === 'Completed') {
+            return true;
+        }
     }
 
     return {
@@ -147,30 +163,46 @@ const UIController = (function () {
             document.querySelector(selectors.updateTask).style.display = 'none';
             document.querySelector(selectors.backBtn).style.display = 'none';
         },
-        getTitleTask() {
-            return document.querySelector(selectors.titleInput).value;
-        },
         showAlert(msg, className) {
             console.log(msg, className)
         },
         clearFields() {
             document.querySelector(selectors.titleInput).value = '';
+            document.querySelector(selectors.description).value = '';
+            document.querySelector(selectors.assignedTo).value = '';
+            document.querySelector(selectors.startAt).value = '';
+            document.querySelector(selectors.endAt).value = '';
         },
-        populateTask(task) {
+        // validateForm() {
+
+        // },
+        getTaskInput() {
+            return {
+                title: document.querySelector(selectors.titleInput).value,
+                description: document.querySelector(selectors.description).value,
+                assignedTo: document.querySelector(selectors.assignedTo).value,
+                startAt: document.querySelector(selectors.startAt).value,
+                endAt: document.querySelector(selectors.endAt).value,
+                priority: document.querySelector(selectors.priority).value,
+                status: document.querySelector(selectors.status).value,
+                completedPercentage: document.querySelector(selectors.completedPercentage).value,
+            }
+        },
+        populateTask({ id, title, assignedTo, endAt, priority, status, completedPercentage }) { // Destructuring parameter task
             // Display task area when new task is added
             displayTaskArea();
             let taskResult = '';
             taskResult += `
                     <tr>
-                        <th scope="row">${task.id}</th>
-                        <td >${task.title}</td>
-                        <td><span class="badge badge-pill badge-${handleBadgeColorPriority(task)}">${handlePriority(task)}</span></td>
-                        <td>${handleStatus(task)}</td>
-                        <td>${task.endAt}</td>
-                        <td>${task.assignedTo}</td>
+                        <th scope="row">${id}</th>
+                        <td >${title}</td>
+                        <td><span class="badge badge-pill badge-${handleBadgeColorPriority(priority)}">${priority}</span></td>
+                        <td class=${handleStyleCompletedStatus(status) ? 'completed-task' : ''}>${status}</td>
+                        <td>${endAt}</td>
+                        <td>${assignedTo}</td>
                         <td>
                             <div class="progress">
-                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${task.completedPercentage}%" aria-valuenow="${task.completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${task.completedPercentage}%</span> </div>
+                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${completedPercentage}%" aria-valuenow="${completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${completedPercentage}%</span> </div>
                         </div>
                         </td>
                         <td>
@@ -184,28 +216,29 @@ const UIController = (function () {
             document.querySelector(selectors.taskBody).insertAdjacentHTML("beforeend", taskResult);
         },
         populateAllTask(tasks) {
-            
-            // Handle display task area
+            // console.log(tasks);
+            // Handle display task table area
             if (tasks.length > 0) {
                 displayTaskArea();
             } else {
                 hideTaskArea();
             }
 
-            // console.log(tasks);
             let tasksResult = '';
             tasks.forEach(task => {
+                // Destructuring all the properties
+                const { id, title, priority, status, endAt, assignedTo, completedPercentage } = task;
                 tasksResult += `
                     <tr>
-                        <th scope="row">${task.id}</th>
-                        <td>${task.title}</td>
-                        <td><span class="badge badge-pill badge-${handleBadgeColorPriority(task)}">${handlePriority(task)}</span></td>
-                        <td>${handleStatus(task)}</td>
-                        <td>${task.endAt}</td>
-                        <td>${task.assignedTo}</td>
+                        <th scope="row">${id}</th>
+                        <td style="text-decoration: line-through">${title}</td>
+                        <td><span class="badge badge-pill badge-${handleBadgeColorPriority(priority)}">${priority}</span></td>
+                        <td class=${handleStyleCompletedStatus(status) ? 'completed-task' : ''}>  ${status}</td>
+                        <td >${endAt}</td>
+                        <td>${assignedTo}</td>
                         <td>
                             <div class="progress">
-                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${task.completedPercentage}%" aria-valuenow="${task.completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${task.completedPercentage}%</span> </div>
+                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${completedPercentage}%" aria-valuenow="${completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${completedPercentage}%</span> </div>
                         </div>
                         </td>
                         <td>
@@ -215,10 +248,10 @@ const UIController = (function () {
                         </td>
                     </tr>
                 `
-                console.log(task)
+                // console.log(task)
             });
             document.querySelector(selectors.taskBody).innerHTML = tasksResult;
-            
+
         }
     }
 })()
@@ -226,8 +259,8 @@ const UIController = (function () {
 
 
 
-// Function to combine between TaskController and UIController
-const AppController = ( (Task, UI, Storage) => {
+// Function to combine between TaskController and UIController ================================================
+const AppController = ((Task, UI, Storage) => {
     // console.log(Task.getTasks());
 
     // Load Event listeners
@@ -241,22 +274,55 @@ const AppController = ( (Task, UI, Storage) => {
         // document.querySelector(selectors.addTask).addEventListener('click', addTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', completeTask);
     }
+
     function addNewTask(e) {
         e.preventDefault();
-        const titleTask = UI.getTitleTask();
-        // console.log(titleTask);
 
-        if (titleTask.trim() === '') {
-            UI.showAlert('Oops... Title must not be an empty. Please try again!', 'warning');
+        // Get all data of a task from UI from
+        const taskInfo = UI.getTaskInput();
+        // console.log(taskInfo);
+
+        // Validation all the fields
+        // UI.validateForm(taskInfo);
+
+        const {
+            title,
+            description,
+            assignedTo,
+            startAt,
+            endAt,
+            priority,
+            status,
+            completedPercentage
+        } = taskInfo;
+
+        // console.log((!status[0].checked));  // priority/status validation is rest
+
+        // Validation all the fields
+        if (
+            title.trim() === ''
+            || description.trim() === ''
+            || assignedTo.trim() === ''
+            || startAt === ''
+            || endAt === ''
+            || priority === ''
+            || status === ''
+            || completedPercentage === ''
+        ) {
+            UI.showAlert('Oops... Some fields must not be empty. Please try again!', 'warning');
+            // } else if (!(priority[0].checked) && !(priority[1].checked) && !(priority[2].checked)) {
+            //     UI.showAlert('One priority must be checked', 'warning');
+            // } else if (!(status[0].checked) && !(status[1].checked) && !(status[2].checked)) {
+            //     UI.showAlert('One status must be checked', 'warning');
         } else {
             // Update to data center
-            const task = Task.addTasks(titleTask);
-            // console.log(task);
+            const task = Task.addTasks(taskInfo);
+            console.log(task);
 
-            // Clear Field
+            // Clear Field after submitting
             UI.clearFields();
 
-            // Update to UI
+            // Update task to UI section
             UI.populateTask(task)
         }
     }
@@ -265,7 +331,12 @@ const AppController = ( (Task, UI, Storage) => {
         if (e.target.classList.contains('fa-check-square')) {
             // console.log(e.target.parentElement.parentElement.children[0].innerText);
             const targetId = Number(e.target.parentElement.parentElement.children[0].innerText);
+            // Update status property to data center
             Task.completedTask(targetId);
+            // Getting updated tasks from Task controller
+            const tasks = Task.getTasks()
+            // Update status to UI
+            UI.populateAllTask(tasks);
         }
     }
 

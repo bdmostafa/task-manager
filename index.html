@@ -13,6 +13,13 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <title>Task Management App | Vanilla JS</title>
+    <style>
+        .completed-task{
+            text-decoration: line-through;
+            font-weight: bold;
+            color:rgb(214, 69, 16);
+        }
+    </style>
 </head>
 
 <body>
@@ -32,26 +39,26 @@
                 <div class="form-group row">
                     <label for="description" class="col-sm-2 col-form-label">Description</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="description" placeholder="Enter your task details"
+                        <textarea class="form-control description" id="description" placeholder="Enter your task details"
                             rows="2"></textarea>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="assignedTo" class="col-sm-2 col-form-label">Assigned To</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="assignedTo"
+                        <input type="text" class="form-control assigned-to" id="assignedTo"
                             placeholder="Enter name whom you have to assign to">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="start" class="col-sm-2 col-form-label">Start</label>
                     <div class="col-sm-4">
-                        <input type="date" class="form-control" id="start"
+                        <input type="date" class="form-control start-date" id="start"
                             placeholder="Enter name whom you have to assign to">
                     </div>
                     <label for="end" class="col-sm-2 col-form-label">End</label>
                     <div class="col-sm-4">
-                        <input type="date" class="form-control" id="end"
+                        <input type="date" class="form-control end-date" id="end"
                             placeholder="Enter name whom you have to assign to">
                     </div>
                 </div>
@@ -59,15 +66,15 @@
                     <div class="col-sm-2">Priority</div>
                     <div class="col-sm-10">
                         <div class="form-check">
-                            <input class="form-check-input" name="status" type="radio" id="high">
+                            <input class="form-check-input" name="priority" type="radio" value="High" id="high">
                             <label class="form-check-label mr-5" for="high">
                                 High
                             </label>
-                            <input class="form-check-input" name="status" type="radio" id="medium">
+                            <input class="form-check-input" name="priority" type="radio" value="Medium" id="medium" checked>
                             <label class="form-check-label mr-5" for="medium">
                                 Medium
                             </label>
-                            <input class="form-check-input" name="status" type="radio" id="low">
+                            <input class="form-check-input" name="priority" type="radio" value="Low" id="low">
                             <label class="form-check-label mr-5" for="low">
                                 Low
                             </label>
@@ -78,16 +85,16 @@
                     <div class="col-sm-2">Status</div>
                     <div class="col-sm-10">
                         <div class="form-check">
-                            <input class="form-check-input" name="status" type="radio" id="New">
-                            <label class="form-check-label mr-5" for="New">
+                            <input class="form-check-input" name="status" type="radio" value="New" id="new" checked>
+                            <label class="form-check-label mr-5" for="new">
                                 New
                             </label>
-                            <input class="form-check-input" name="status" type="radio" id="In Progress">
-                            <label class="form-check-label mr-5" for="In Progress">
+                            <input class="form-check-input" name="status" type="radio" value="In Progress" id="in-progress">
+                            <label class="form-check-label mr-5" for="in-progress">
                                 In Progress
                             </label>
-                            <input class="form-check-input" name="status" type="radio" id="Completed">
-                            <label class="form-check-label mr-5" for="Completed">
+                            <input class="form-check-input" name="status" type="radio" value="Completed" id="completed">
+                            <label class="form-check-label mr-5" for="completed">
                                 Completed
                             </label>
                         </div>
@@ -96,8 +103,8 @@
                 
                 <div class="form-group row">
                     <div class="col-sm-6 col-md-4">Completed in Percentage</div>
-                    <input class="ml-3" id="char-range" type="range" min="1" max="100" value="50">
-                    <input class="" id="char-amount" class="char-amount" type="number" min="1" max="100" value="50">
+                    <input class="ml-3 percentage-range" id="char-range" type="range" min="1" max="100" value="50">
+                    <input id="char-amount" class="percentage-num" type="number" min="1" max="100" value="50">
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-10">
