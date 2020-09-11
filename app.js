@@ -41,6 +41,9 @@ const TaskController = (function () {
     };
 
     return {
+        getData() {
+            return data;
+        },
         getTasks() {
             return data.tasks;
         },
@@ -48,9 +51,13 @@ const TaskController = (function () {
             return data.tasks.find(task => task.id === id)
         },
         setCurrentTask(taskToBeEdited) {
+            // Assign target event task to currentTask property of data object
             data.currentTask = taskToBeEdited;
         },
-        updateItem(taskToBeUpdated){
+        getCurrentTask() {
+            return data.currentTask;
+        },
+        updateItem(taskToBeUpdated) {
             // updatedTask is needed for local storage purposes
             let updatedTask = null;
             // Assign map result array to data.tasks
@@ -67,6 +74,10 @@ const TaskController = (function () {
                 }
             });
             return updatedTask;
+        },
+        deleteTask(targetedTask) {
+            data.tasks = data.tasks.filter(task => task.id !== targetedTask.id);
+            console.log(data.tasks)
         },
         // Destructuring argument taskInfo
         addTasks({
@@ -314,6 +325,7 @@ const AppController = ((Task, UI, Storage) => {
         document.querySelector(selectors.updateTaskBtn).addEventListener('click', updateTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', editTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', completeTask);
+        document.querySelector(selectors.displayTaskArea).addEventListener('click', deleteTask);
     }
 
     function addNewTask(e) {
@@ -368,19 +380,6 @@ const AppController = ((Task, UI, Storage) => {
         }
     }
 
-    function completeTask(e) {
-        if (e.target.classList.contains('fa-check-square')) {
-            // console.log(e.target.parentElement.parentElement.children[0].innerText);
-            const targetId = Number(e.target.parentElement.parentElement.children[0].innerText);
-            // Update status property to data center
-            Task.completedTask(targetId);
-            // Getting updated tasks from Task controller
-            const tasks = Task.getTasks()
-            // Update status to UI
-            UI.populateAllTask(tasks);
-        }
-    }
-
     function editTask(e) {
         if (e.target.classList.contains('fa-edit')) {
             // Getting targeted ID
@@ -407,10 +406,37 @@ const AppController = ((Task, UI, Storage) => {
         UI.clearUpdateState();
         // Getting tasks
         const tasks = Task.getTasks();
-        console.log(tasks)
         // Update UI
         UI.populateAllTask(tasks);
 
+    }
+
+    function completeTask(e) {
+        if (e.target.classList.contains('fa-check-square')) {
+            // console.log(e.target.parentElement.parentElement.children[0].innerText);
+            const targetId = Number(e.target.parentElement.parentElement.children[0].innerText);
+            // Update status property to data center
+            Task.completedTask(targetId);
+            // Getting updated tasks from Task controller
+            const tasks = Task.getTasks()
+            // Update status to UI
+            UI.populateAllTask(tasks);
+        }
+    }
+
+    function deleteTask(e) {
+        if (e.target.classList.contains('fa-trash-alt')) {
+            // Getting targeted ID
+            const targetId = Number(e.target.parentElement.parentElement.children[0].innerText);
+            // Getting targeted task by Id
+            const taskToBeDeleted = Task.getTaskById(targetId);
+            // Update task / remove task from data center
+            Task.deleteTask(taskToBeDeleted);
+            // Getting tasks
+            const tasks = Task.getTasks();
+            // Update UI
+            UI.populateAllTask(tasks);
+        }
     }
 
     return {
