@@ -50,6 +50,21 @@ const TaskController = (function () {
         setCurrentTask(taskToBeEdited) {
             data.currentTask = taskToBeEdited;
         },
+        updateItem(taskToBeUpdated){
+            // updatedTask is needed for local storage purposes
+            let updatedTask = null;
+            // Assign map result array to data.tasks
+            data.tasks = data.tasks.map(task => {
+                if (task.id === data.currentTask.id) {
+                    task = taskToBeUpdated;
+                    updatedTask = task;
+                    return task;
+                } else {
+                    return task;
+                }
+            });
+            return updatedTask;
+        },
         // Destructuring argument taskInfo
         addTasks({
             title,
@@ -163,11 +178,11 @@ const UIController = (function () {
         },
         showUpdateState() {
             document.querySelector(selectors.addTask).style.display = 'none';
-            document.querySelector(selectors.updateTaskBtn).style.display = 'block';
-            document.querySelector(selectors.backBtn).style.display = 'block';
+            document.querySelector(selectors.updateTaskBtn).style.display = 'inline-block';
+            document.querySelector(selectors.backBtn).style.display = 'inline-block';
         },
-        showBackState() {
-            document.querySelector(selectors.addTask).style.display = 'block';
+        clearUpdateState() {
+            document.querySelector(selectors.addTask).style.display = 'inline-block';
             document.querySelector(selectors.updateTaskBtn).style.display = 'none';
             document.querySelector(selectors.backBtn).style.display = 'none';
         },
@@ -291,7 +306,7 @@ const AppController = ((Task, UI, Storage) => {
         // Register all the functions of click event listeners
         document.querySelector(selectors.addTask).addEventListener('click', addNewTask);
         // document.querySelector(selectors.backBtn).addEventListener('click', backDefault);
-        // document.querySelector(selectors.addTask).addEventListener('click', addTask);
+        document.querySelector(selectors.updateTaskBtn).addEventListener('click', updateTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', editTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', completeTask);
     }
@@ -371,9 +386,28 @@ const AppController = ((Task, UI, Storage) => {
             Task.setCurrentTask(taskToBeUpdated);
             // Display task to UI from
             UI.populateForm(taskToBeUpdated);
-            console.log(taskToBeUpdated)
         }
     }
+
+    function updateTask(e) {
+        e.preventDefault();
+        // Getting current input value
+        const inputValueToUpdate = UI.getTaskInput();
+        // Updating value to data center
+        const updatedTask = Task.updateItem(inputValueToUpdate);
+        // console.log(updatedTask);
+        // Clear Fields
+        UI.clearFields();
+        // Remove Update and Back button
+        UI.clearUpdateState();
+        // Getting tasks
+        const tasks = Task.getTasks();
+        console.log(tasks)
+        // Update UI
+        UI.populateAllTask(tasks);
+
+    }
+
     return {
         init() {
             // Getting tasks from data center
@@ -386,7 +420,7 @@ const AppController = ((Task, UI, Storage) => {
             UI.showUpdateState();
 
             // Show back state
-            UI.showBackState();
+            UI.clearUpdateState();
 
             // Call event listeners
             loadEventListeners();
