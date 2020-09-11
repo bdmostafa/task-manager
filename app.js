@@ -7,8 +7,8 @@ const TaskController = (function () {
                 title: 'task1',
                 description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mostafa',
-                startAt: new Date().toLocaleDateString(),
-                endAt: new Date().toLocaleDateString(),
+                startAt: new Date().toISOString().slice(0, 10),
+                endAt: new Date().toISOString().slice(0, 10),
                 priority: 'High',
                 status: 'In Progress',
                 completedPercentage: 50
@@ -18,8 +18,8 @@ const TaskController = (function () {
                 title: 'task1',
                 description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mostafa',
-                startAt: new Date().toLocaleDateString(),
-                endAt: new Date().toLocaleDateString(),
+                startAt: new Date().toISOString().slice(0, 10),
+                endAt: new Date().toISOString().slice(0, 10),
                 priority: 'Low',
                 status: 'New',
                 completedPercentage: 50
@@ -29,18 +29,26 @@ const TaskController = (function () {
                 title: 'task2',
                 description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mahumud',
-                startAt: new Date().toLocaleDateString(),
-                endAt: new Date().toLocaleDateString(),
+                startAt: new Date().toISOString().slice(0, 10),
+                endAt: new Date().toISOString().slice(0, 10),
                 priority: 'Medium',
                 status: 'Completed',
                 completedPercentage: 90
             }
-        ]
+        ],
+        // currentTask is for edit/update task usages
+        currentTask: null
     };
 
     return {
         getTasks() {
             return data.tasks;
+        },
+        getTaskById(id) {
+            return data.tasks.find(task => task.id === id)
+        },
+        setCurrentTask(taskToBeEdited) {
+            data.currentTask = taskToBeEdited;
         },
         // Destructuring argument taskInfo
         addTasks({
@@ -116,7 +124,7 @@ const UIController = (function () {
         titleInput: '.title-input',
         taskBody: '#task-body',
         addTask: '.add-btn',
-        updateTask: '.update-btn',
+        updateTaskBtn: '.update-btn',
         backBtn: '.back-btn',
         description: '.description',
         assignedTo: '.assigned-to',
@@ -155,12 +163,12 @@ const UIController = (function () {
         },
         showUpdateState() {
             document.querySelector(selectors.addTask).style.display = 'none';
-            document.querySelector(selectors.updateTask).style.display = 'block';
+            document.querySelector(selectors.updateTaskBtn).style.display = 'block';
             document.querySelector(selectors.backBtn).style.display = 'block';
         },
         showBackState() {
             document.querySelector(selectors.addTask).style.display = 'block';
-            document.querySelector(selectors.updateTask).style.display = 'none';
+            document.querySelector(selectors.updateTaskBtn).style.display = 'none';
             document.querySelector(selectors.backBtn).style.display = 'none';
         },
         showAlert(msg, className) {
@@ -187,6 +195,19 @@ const UIController = (function () {
                 status: document.querySelector(selectors.status).value,
                 completedPercentage: document.querySelector(selectors.completedPercentage).value,
             }
+        },
+        populateForm({ title, description, assignedTo, startAt, endAt, priority, status, completedPercentage }) {
+            // Display Update and Back button on the form
+            this.showUpdateState();
+            console.log(startAt)
+            document.querySelector(selectors.titleInput).value = title;
+            document.querySelector(selectors.description).value = description;
+            document.querySelector(selectors.assignedTo).value = assignedTo;
+            document.querySelector(selectors.startAt).value = startAt;
+            document.querySelector(selectors.endAt).value = endAt;
+            document.querySelector(selectors.priority).value = priority;
+            document.querySelector(selectors.status).value = status;
+            document.querySelector(selectors.completedPercentage).value = completedPercentage;
         },
         populateTask({ id, title, assignedTo, endAt, priority, status, completedPercentage }) { // Destructuring parameter task
             // Display task area when new task is added
@@ -231,7 +252,7 @@ const UIController = (function () {
                 tasksResult += `
                     <tr>
                         <th scope="row">${id}</th>
-                        <td style="text-decoration: line-through">${title}</td>
+                        <td>${title}</td>
                         <td><span class="badge badge-pill badge-${handleBadgeColorPriority(priority)}">${priority}</span></td>
                         <td class=${handleStyleCompletedStatus(status) ? 'completed-task' : ''}>  ${status}</td>
                         <td >${endAt}</td>
@@ -269,9 +290,9 @@ const AppController = ((Task, UI, Storage) => {
 
         // Register all the functions of click event listeners
         document.querySelector(selectors.addTask).addEventListener('click', addNewTask);
-        // document.querySelector(selectors.updateTask).addEventListener('click', UpdateTask);
         // document.querySelector(selectors.backBtn).addEventListener('click', backDefault);
         // document.querySelector(selectors.addTask).addEventListener('click', addTask);
+        document.querySelector(selectors.displayTaskArea).addEventListener('click', editTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', completeTask);
     }
 
@@ -340,6 +361,19 @@ const AppController = ((Task, UI, Storage) => {
         }
     }
 
+    function editTask(e) {
+        if (e.target.classList.contains('fa-edit')) {
+            // Getting targeted ID
+            const targetId = Number(e.target.parentElement.parentElement.children[0].innerText);
+            // Getting targeted task
+            const taskToBeUpdated = Task.getTaskById(targetId);
+            // Update state to data center
+            Task.setCurrentTask(taskToBeUpdated);
+            // Display task to UI from
+            UI.populateForm(taskToBeUpdated);
+            console.log(taskToBeUpdated)
+        }
+    }
     return {
         init() {
             // Getting tasks from data center
