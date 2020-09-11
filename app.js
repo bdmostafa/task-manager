@@ -57,6 +57,25 @@ const TaskController = (function () {
         getCurrentTask() {
             return data.currentTask;
         },
+        getTotalTaskCount() {
+            return data.tasks.length;
+        },
+        getStatusCount(){
+            let newCount = 0;
+            let progressCount = 0;
+            let completedCount = 0;
+            data.tasks.map(task => {
+                if (task.status === 'New') {
+                    newCount += 1;
+                } else if (task.status === 'In Progress') {
+                    progressCount += 1;
+                } else if (task.status === 'Completed') {
+                    completedCount += 1;
+                }
+            })
+            const allCounts = [newCount, progressCount, completedCount];
+            return [...allCounts];
+        },
         updateItem(taskToBeUpdated) {
             // updatedTask is needed for local storage purposes
             let updatedTask = null;
@@ -162,8 +181,11 @@ const UIController = (function () {
         endAt: '.end-date',
         priority: 'input[type=radio][name=priority]:checked',
         status: 'input[type=radio][name=status]:checked',
-        completedPercentage: '.percentage-num'
-
+        completedPercentage: '.percentage-num',
+        total: '.total',
+        new: '.new',
+        inProgress: '.in-progress',
+        completed: '.completed'
     }
 
     const displayTaskArea = () => {
@@ -214,6 +236,14 @@ const UIController = (function () {
         // validateForm() {
 
         // },
+        showTotalTaskCount(tasksCount) {
+            document.querySelector(selectors.total).textContent = tasksCount;
+        },
+        showStatusCount([newCount, inProgress, completed]) {
+            document.querySelector(selectors.new).textContent = newCount;
+            document.querySelector(selectors.inProgress).textContent = inProgress;
+            document.querySelector(selectors.completed).textContent = completed;
+        },
         getTaskInput() {
             return {
                 id: document.querySelector(selectors.id).value,
@@ -370,10 +400,12 @@ const AppController = ((Task, UI, Storage) => {
         } else {
             // Update to data center
             const task = Task.addTasks(taskInfo);
-            console.log(task);
 
             // Clear Field after submitting
             UI.clearFields();
+
+            // Task count function calling
+            handleTaskCount();
 
             // Update task to UI section
             UI.populateTask(task)
@@ -397,6 +429,9 @@ const AppController = ((Task, UI, Storage) => {
             Task.setCurrentTask(taskToBeUpdated);
             // Display task to UI from
             UI.populateForm(taskToBeUpdated);
+
+            // Task count function calling
+            handleTaskCount();
         }
     }
 
@@ -416,6 +451,9 @@ const AppController = ((Task, UI, Storage) => {
         // Update UI
         UI.populateAllTask(tasks);
 
+        // Task count function calling
+        handleTaskCount();
+
     }
 
     function completeTask(e) {
@@ -428,6 +466,9 @@ const AppController = ((Task, UI, Storage) => {
             const tasks = Task.getTasks()
             // Update status to UI
             UI.populateAllTask(tasks);
+
+            // Task count function calling
+            handleTaskCount();
         }
     }
 
@@ -443,13 +484,29 @@ const AppController = ((Task, UI, Storage) => {
             const tasks = Task.getTasks();
             // Update UI
             UI.populateAllTask(tasks);
+
+            // Task count function calling
+            handleTaskCount();
         }
+    }
+
+    function handleTaskCount() {
+        // Gettting total task count and pass to UI section
+        const totalTask = Task.getTotalTaskCount();
+        UI.showTotalTaskCount(totalTask);
+
+        const statusCount = Task.getStatusCount();
+        UI.showStatusCount(statusCount);
+        
     }
 
     return {
         init() {
             // Getting tasks from data center
             const tasks = Task.getTasks();
+
+            // Task count function calling
+            handleTaskCount();
 
             // Populating tasks in UI
             UI.populateAllTask(tasks)
