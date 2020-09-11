@@ -196,7 +196,7 @@ const UIController = (function () {
             document.querySelector(selectors.updateTaskBtn).style.display = 'inline-block';
             document.querySelector(selectors.backBtn).style.display = 'inline-block';
         },
-        clearUpdateState() {
+        showDefaultWithBackBtn() {
             document.querySelector(selectors.addTask).style.display = 'inline-block';
             document.querySelector(selectors.updateTaskBtn).style.display = 'none';
             document.querySelector(selectors.backBtn).style.display = 'none';
@@ -321,8 +321,8 @@ const AppController = ((Task, UI, Storage) => {
 
         // Register all the functions of click event listeners
         document.querySelector(selectors.addTask).addEventListener('click', addNewTask);
-        // document.querySelector(selectors.backBtn).addEventListener('click', backDefault);
         document.querySelector(selectors.updateTaskBtn).addEventListener('click', updateTask);
+        document.querySelector(selectors.backBtn).addEventListener('click', backDefault);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', editTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', completeTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', deleteTask);
@@ -380,6 +380,13 @@ const AppController = ((Task, UI, Storage) => {
         }
     }
 
+    function backDefault(e) {
+        e.preventDefault();
+        // Clear form fields
+        UI.clearFields();
+        // Show blank state
+        UI.showDefaultWithBackBtn();
+    }
     function editTask(e) {
         if (e.target.classList.contains('fa-edit')) {
             // Getting targeted ID
@@ -403,7 +410,7 @@ const AppController = ((Task, UI, Storage) => {
         // Clear Fields
         UI.clearFields();
         // Remove Update and Back button
-        UI.clearUpdateState();
+        UI.showDefaultWithBackBtn();
         // Getting tasks
         const tasks = Task.getTasks();
         // Update UI
@@ -451,7 +458,7 @@ const AppController = ((Task, UI, Storage) => {
             UI.showUpdateState();
 
             // Show back state
-            UI.clearUpdateState();
+            UI.showDefaultWithBackBtn();
 
             // Call event listeners
             loadEventListeners();
