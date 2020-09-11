@@ -5,7 +5,7 @@ const TaskController = (function () {
             {
                 id: 1,
                 title: 'task1',
-                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+                subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mostafa',
                 startAt: new Date().toISOString().slice(0, 10),
                 endAt: new Date().toISOString().slice(0, 10),
@@ -16,7 +16,7 @@ const TaskController = (function () {
             {
                 id: 2,
                 title: 'task1',
-                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+                subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mostafa',
                 startAt: new Date().toISOString().slice(0, 10),
                 endAt: new Date().toISOString().slice(0, 10),
@@ -27,7 +27,7 @@ const TaskController = (function () {
             {
                 id: 3,
                 title: 'task2',
-                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+                subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mahumud',
                 startAt: new Date().toISOString().slice(0, 10),
                 endAt: new Date().toISOString().slice(0, 10),
@@ -57,6 +57,9 @@ const TaskController = (function () {
             data.tasks = data.tasks.map(task => {
                 if (task.id === data.currentTask.id) {
                     task = taskToBeUpdated;
+                    // Assign current id because id field in form is hidden to UI
+                    task.id = data.currentTask.id;
+                    // Assign task to updatedTask for local storage purpose
                     updatedTask = task;
                     return task;
                 } else {
@@ -68,7 +71,7 @@ const TaskController = (function () {
         // Destructuring argument taskInfo
         addTasks({
             title,
-            description,
+            subTitle,
             assignedTo,
             startAt,
             endAt,
@@ -82,7 +85,7 @@ const TaskController = (function () {
                 // When property and value name are the same, avoid naming twice
                 id,
                 title,
-                description,
+                subTitle,
                 assignedTo,
                 startAt,
                 endAt,
@@ -135,13 +138,14 @@ const StorageConroller = (function () {
 const UIController = (function () {
     // Create object for all the necessary selectors
     const selectors = {
-        displayTaskArea: '.display-task-area',
+        id: '.id',
         titleInput: '.title-input',
+        displayTaskArea: '.display-task-area',
         taskBody: '#task-body',
         addTask: '.add-btn',
         updateTaskBtn: '.update-btn',
         backBtn: '.back-btn',
-        description: '.description',
+        subTitle: '.sub-title',
         assignedTo: '.assigned-to',
         startAt: '.start-date',
         endAt: '.end-date',
@@ -191,7 +195,7 @@ const UIController = (function () {
         },
         clearFields() {
             document.querySelector(selectors.titleInput).value = '';
-            document.querySelector(selectors.description).value = '';
+            document.querySelector(selectors.subTitle).value = '';
             document.querySelector(selectors.assignedTo).value = '';
             document.querySelector(selectors.startAt).value = '';
             document.querySelector(selectors.endAt).value = '';
@@ -201,8 +205,9 @@ const UIController = (function () {
         // },
         getTaskInput() {
             return {
+                id: document.querySelector(selectors.id).value,
                 title: document.querySelector(selectors.titleInput).value,
-                description: document.querySelector(selectors.description).value,
+                subTitle: document.querySelector(selectors.subTitle).value,
                 assignedTo: document.querySelector(selectors.assignedTo).value,
                 startAt: document.querySelector(selectors.startAt).value,
                 endAt: document.querySelector(selectors.endAt).value,
@@ -211,12 +216,12 @@ const UIController = (function () {
                 completedPercentage: document.querySelector(selectors.completedPercentage).value,
             }
         },
-        populateForm({ title, description, assignedTo, startAt, endAt, priority, status, completedPercentage }) {
+        populateForm({ title, subTitle, assignedTo, startAt, endAt, priority, status, completedPercentage }) {
             // Display Update and Back button on the form
             this.showUpdateState();
-            console.log(startAt)
+            // Populate all the fields
             document.querySelector(selectors.titleInput).value = title;
-            document.querySelector(selectors.description).value = description;
+            document.querySelector(selectors.subTitle).value = subTitle;
             document.querySelector(selectors.assignedTo).value = assignedTo;
             document.querySelector(selectors.startAt).value = startAt;
             document.querySelector(selectors.endAt).value = endAt;
@@ -323,7 +328,7 @@ const AppController = ((Task, UI, Storage) => {
 
         const {
             title,
-            description,
+            subTitle,
             assignedTo,
             startAt,
             endAt,
@@ -337,7 +342,7 @@ const AppController = ((Task, UI, Storage) => {
         // Validation all the fields
         if (
             title.trim() === ''
-            || description.trim() === ''
+            || subTitle.trim() === ''
             || assignedTo.trim() === ''
             || startAt === ''
             || endAt === ''
@@ -380,7 +385,7 @@ const AppController = ((Task, UI, Storage) => {
         if (e.target.classList.contains('fa-edit')) {
             // Getting targeted ID
             const targetId = Number(e.target.parentElement.parentElement.children[0].innerText);
-            // Getting targeted task
+            // Getting targeted task by Id
             const taskToBeUpdated = Task.getTaskById(targetId);
             // Update state to data center
             Task.setCurrentTask(taskToBeUpdated);
