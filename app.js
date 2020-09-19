@@ -197,6 +197,7 @@ const TaskController = (function (Storage) {
                 if (task.id === id) {
                     if (task.status === 'New' || 'In Progress') {
                         task.status = 'Completed';
+                        task.completedPercentage = 100;
                     }
                     return task;
                 } else {
@@ -490,7 +491,7 @@ const AppController = ((Task, UI, Storage) => {
             const taskToBeUpdated = Task.getTaskById(targetId);
             // Update state to data center
             Task.setCurrentTask(taskToBeUpdated);
-            // Display task to UI from
+            // Display task info to UI from
             UI.populateForm(taskToBeUpdated);
             // Task count function calling
             handleTaskCount();
@@ -524,6 +525,10 @@ const AppController = ((Task, UI, Storage) => {
             const targetId = Number(e.target.parentElement.parentElement.children[0].innerText);
             // Update status property to data center
             Task.completedTask(targetId);
+            // Get task by Id
+            const targatedTask = Task.getTaskById(targetId)
+            // Update completed status to local storage
+            Storage.updateTask(targatedTask);
             // Getting updated tasks from Task controller
             const tasks = Task.getTasks()
             // Update status to UI
