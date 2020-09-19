@@ -21,10 +21,10 @@ const StorageConroller = (function () {
             }
             return tasks;
         },
-        updateTask(updatedTask){
+        updateTask(updatedTask) {
             let tasks = JSON.parse(localStorage.getItem('tasks'));
             tasks.forEach((task, idx) => {
-                if (task.id === updatedTask.id){
+                if (task.id === updatedTask.id) {
                     // Remove selected indexed task
                     // Add/Replace updatedTask on that indexed position
                     tasks.splice(idx, 1, updatedTask)
@@ -41,7 +41,7 @@ const StorageConroller = (function () {
             // })
             // localStorage.setItem('tasks', JSON.stringify(updateTask));
         },
-        deleteTask(taskToBeDeleted){
+        deleteTask(taskToBeDeleted) {
             let tasks = JSON.parse(localStorage.getItem('tasks'));
             // Filter tasks that are not to be deleted
             const filteredTask = tasks.filter(task => task.id !== taskToBeDeleted.id);
@@ -228,7 +228,8 @@ const UIController = (function () {
         total: '.total',
         new: '.new',
         inProgress: '.in-progress',
-        completed: '.completed'
+        completed: '.completed',
+        alert: '.alert'
     }
 
     const displayTaskArea = () => {
@@ -268,6 +269,21 @@ const UIController = (function () {
         },
         showAlert(msg, className) {
             console.log(msg, className)
+            const div = document.createElement('div');
+            div.textContent = msg;
+            div.className = `alert alert-${className}`;
+            document
+                .querySelector(selectors.displayTaskArea)
+                .insertAdjacentElement('beforebegin', div)
+            // After 3 seconds, alert is removed
+            if (document.querySelector(selectors.alert)) {
+                this.clearAlert();
+            }
+        },
+        clearAlert() {
+            setTimeout(() => {
+                document.querySelector(selectors.alert).remove()
+            }, 3000)
         },
         clearFields() {
             document.querySelector(selectors.titleInput).value = '';
