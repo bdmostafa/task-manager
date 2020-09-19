@@ -1,41 +1,69 @@
-// Function to control task data
-const TaskController = (function () {
-    let data = {
-        tasks: [
-            {
-                id: 1,
-                title: 'task1',
-                subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
-                assignedTo: 'Mostafa',
-                startAt: new Date().toISOString().slice(0, 10),
-                endAt: new Date().toISOString().slice(0, 10),
-                priority: 'High',
-                status: 'In Progress',
-                completedPercentage: 50
-            },
-            {
-                id: 2,
-                title: 'task2',
-                subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
-                assignedTo: 'Mostafa',
-                startAt: new Date().toISOString().slice(0, 10),
-                endAt: new Date().toISOString().slice(0, 10),
-                priority: 'Low',
-                status: 'New',
-                completedPercentage: 50
-            },
-            {
-                id: 3,
-                title: 'task3',
-                subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
-                assignedTo: 'Mahumud',
-                startAt: new Date().toISOString().slice(0, 10),
-                endAt: new Date().toISOString().slice(0, 10),
-                priority: 'Medium',
-                status: 'Completed',
-                completedPercentage: 90
+// Function to local storage ========================================================================
+const StorageConroller = (function () {
+    return {
+        addTask(task) {
+            let tasks;
+            if (localStorage.getItem('tasks') === null) {
+                tasks = [];
+                tasks.push(task)
+            } else {
+                tasks = JSON.parse(localStorage.getItem('tasks'));
+                tasks.push(task)
             }
-        ],
+            localStorage.setItem('tasks', JSON.stringify(tasks))
+        },
+        getTasks() {
+            let tasks;
+            if (localStorage.getItem('tasks') === null) {
+                tasks = [];
+            } else {
+                tasks = JSON.parse(localStorage.getItem('tasks'));
+            }
+            return tasks;
+        }
+    }
+})()
+
+// Function to control task data
+const TaskController = (function (Storage) {
+    let data = {
+        tasks: Storage.getTasks(),
+        // [
+        //     {
+        //         id: 1,
+        //         title: 'task1',
+        //         subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+        //         assignedTo: 'Mostafa',
+        //         startAt: new Date().toISOString().slice(0, 10),
+        //         endAt: new Date().toISOString().slice(0, 10),
+        //         priority: 'High',
+        //         status: 'In Progress',
+        //         completedPercentage: 50
+        //     },
+        //     {
+        //         id: 2,
+        //         title: 'task2',
+        //         subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+        //         assignedTo: 'Mostafa',
+        //         startAt: new Date().toISOString().slice(0, 10),
+        //         endAt: new Date().toISOString().slice(0, 10),
+        //         priority: 'Low',
+        //         status: 'New',
+        //         completedPercentage: 50
+        //     },
+        //     {
+        //         id: 3,
+        //         title: 'task3',
+        //         subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
+        //         assignedTo: 'Mahumud',
+        //         startAt: new Date().toISOString().slice(0, 10),
+        //         endAt: new Date().toISOString().slice(0, 10),
+        //         priority: 'Medium',
+        //         status: 'Completed',
+        //         completedPercentage: 90
+        //     }
+        // ],
+
         // currentTask is for edit/update task usages
         currentTask: null
     };
@@ -151,27 +179,7 @@ const TaskController = (function () {
             });
         }
     }
-})()
-
-
-// Function to local storage ========================================================================
-const StorageConroller = (function () {
-    return {
-        addTask(task) {
-            let tasks;
-            if (localStorage.getItem('tasks') === null) {
-                tasks = [];
-                tasks.push(task)
-            } else {
-                tasks = JSON.parse(localStorage.getItem('tasks'));
-                tasks.push(task)
-            }
-            localStorage.setItem('tasks', JSON.stringify(tasks))
-        }
-    }
-})()
-
-
+})(StorageConroller)
 
 // Function to connect with task data into UI DOM ============================================================
 const UIController = (function () {
@@ -377,6 +385,7 @@ const AppController = ((Task, UI, Storage) => {
         // Validation all the fields
         // UI.validateForm(taskInfo);
 
+        // Destructuring taskInfo properties
         const {
             title,
             subTitle,
