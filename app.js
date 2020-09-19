@@ -15,7 +15,7 @@ const TaskController = (function () {
             },
             {
                 id: 2,
-                title: 'task1',
+                title: 'task2',
                 subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mostafa',
                 startAt: new Date().toISOString().slice(0, 10),
@@ -26,7 +26,7 @@ const TaskController = (function () {
             },
             {
                 id: 3,
-                title: 'task2',
+                title: 'task3',
                 subTitle: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, harum',
                 assignedTo: 'Mahumud',
                 startAt: new Date().toISOString().slice(0, 10),
@@ -60,7 +60,7 @@ const TaskController = (function () {
         getTotalTaskCount() {
             return data.tasks.length;
         },
-        getStatusCount(){
+        getStatusCount() {
             let newCount = 0;
             let progressCount = 0;
             let completedCount = 0;
@@ -149,9 +149,6 @@ const TaskController = (function () {
                     return task;
                 }
             });
-            console.log(data.tasks);
-            // data.tasks = updatedTask;
-
         }
     }
 })()
@@ -159,7 +156,19 @@ const TaskController = (function () {
 
 // Function to local storage ========================================================================
 const StorageConroller = (function () {
-
+    return {
+        addTask(task) {
+            let tasks;
+            if (localStorage.getItem('tasks') === null) {
+                tasks = [];
+                tasks.push(task)
+            } else {
+                tasks = JSON.parse(localStorage.getItem('tasks'));
+                tasks.push(task)
+            }
+            localStorage.setItem('tasks', JSON.stringify(tasks))
+        }
+    }
 })()
 
 
@@ -401,6 +410,9 @@ const AppController = ((Task, UI, Storage) => {
             // Update to data center
             const task = Task.addTasks(taskInfo);
 
+            // Update to Local Storage
+            Storage.addTask(task);
+
             // Clear Field after submitting
             UI.clearFields();
 
@@ -429,7 +441,6 @@ const AppController = ((Task, UI, Storage) => {
             Task.setCurrentTask(taskToBeUpdated);
             // Display task to UI from
             UI.populateForm(taskToBeUpdated);
-
             // Task count function calling
             handleTaskCount();
         }
@@ -441,7 +452,6 @@ const AppController = ((Task, UI, Storage) => {
         const inputValueToUpdate = UI.getTaskInput();
         // Updating value to data center
         const updatedTask = Task.updateItem(inputValueToUpdate);
-        // console.log(updatedTask);
         // Clear Fields
         UI.clearFields();
         // Remove Update and Back button
@@ -450,7 +460,6 @@ const AppController = ((Task, UI, Storage) => {
         const tasks = Task.getTasks();
         // Update UI
         UI.populateAllTask(tasks);
-
         // Task count function calling
         handleTaskCount();
 
@@ -497,7 +506,7 @@ const AppController = ((Task, UI, Storage) => {
 
         const statusCount = Task.getStatusCount();
         UI.showStatusCount(statusCount);
-        
+
     }
 
     return {
