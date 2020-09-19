@@ -40,6 +40,12 @@ const StorageConroller = (function () {
             //     return task;
             // })
             // localStorage.setItem('tasks', JSON.stringify(updateTask));
+        },
+        deleteTask(taskToBeDeleted){
+            let tasks = JSON.parse(localStorage.getItem('tasks'));
+            // Filter tasks that are not to be deleted
+            const filteredTask = tasks.filter(task => task.id !== taskToBeDeleted.id);
+            localStorage.setItem('tasks', JSON.stringify(filteredTask));
         }
     }
 })()
@@ -520,6 +526,8 @@ const AppController = ((Task, UI, Storage) => {
             const taskToBeDeleted = Task.getTaskById(targetId);
             // Update task / remove task from data center
             Task.deleteTask(taskToBeDeleted);
+            // Delete from local storage
+            Storage.deleteTask(taskToBeDeleted)
             // Getting tasks
             const tasks = Task.getTasks();
             // Update UI
