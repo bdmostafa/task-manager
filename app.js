@@ -163,8 +163,13 @@ const TaskController = (function (Storage) {
             status,
             completedPercentage
         }) {
-            // Task id no should be started from 1
-            const id = data.tasks.length > 0 ? data.tasks.length + 1 : 1
+            // Task id no should be started from 1 if tasks length is zero
+            // Another new task id will be plus 1 following last task id
+            const id = 
+                data.tasks.length > 0 
+                ? data.tasks[data.tasks.length - 1].id + 1 
+                : 1
+
             const task = {
                 // When property and value name are the same, avoid naming twice
                 id,
