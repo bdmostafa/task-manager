@@ -230,6 +230,7 @@ const UIController = (function () {
         endAt: '.end-date',
         priority: 'input[type=radio][name=priority]:checked',
         status: 'input[type=radio][name=status]:checked',
+        percentageRange: '.percentage-range',
         completedPercentage: '.percentage-num',
         total: '.total',
         new: '.new',
@@ -415,12 +416,19 @@ const AppController = ((Task, UI, Storage) => {
         const selectors = UI.getSelectors();
 
         // Register all the functions of click event listeners
+        document.querySelector(selectors.percentageRange).addEventListener('input', rangeWithAmount);
         document.querySelector(selectors.addTask).addEventListener('click', addNewTask);
         document.querySelector(selectors.updateTaskBtn).addEventListener('click', updateTask);
         document.querySelector(selectors.backBtn).addEventListener('click', backDefault);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', editTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', completeTask);
         document.querySelector(selectors.displayTaskArea).addEventListener('click', deleteTask);
+    }
+
+    function rangeWithAmount(e) {
+        const value = e.target.value;
+        document.querySelector('.percentage-range').value = value;
+        document.querySelector('.percentage-num').value = value;
     }
 
     function addNewTask(e) {
