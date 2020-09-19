@@ -20,6 +20,26 @@ const StorageConroller = (function () {
                 tasks = JSON.parse(localStorage.getItem('tasks'));
             }
             return tasks;
+        },
+        updateTask(updatedTask){
+            let tasks = JSON.parse(localStorage.getItem('tasks'));
+            tasks.forEach((task, idx) => {
+                if (task.id === updatedTask.id){
+                    // Remove selected indexed task
+                    // Add/Replace updatedTask on that indexed position
+                    tasks.splice(idx, 1, updatedTask)
+                }
+            });
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            // Another way using map
+            // const updateTask = tasks.map(task => {
+            //     if (task.id === updatedTask.id) {
+            //         task = updatedTask;
+            //         return task;
+            //     }
+            //     return task;
+            // })
+            // localStorage.setItem('tasks', JSON.stringify(updateTask));
         }
     }
 })()
@@ -461,6 +481,8 @@ const AppController = ((Task, UI, Storage) => {
         const inputValueToUpdate = UI.getTaskInput();
         // Updating value to data center
         const updatedTask = Task.updateItem(inputValueToUpdate);
+        // Update to localStorage
+        Storage.updateTask(updatedTask);
         // Clear Fields
         UI.clearFields();
         // Remove Update and Back button
@@ -539,8 +561,6 @@ const AppController = ((Task, UI, Storage) => {
             loadEventListeners();
         }
     }
-
-
 })(TaskController, UIController, StorageConroller)
 // Arguments pass for better way because update/change make easier in future
 
