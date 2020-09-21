@@ -32,6 +32,11 @@ const UIController = (function () {
     }
 
     const priorityChecked = () => {
+        // document.getElementsByName('priority').forEach((item) => {
+        //     console.log(item, item.value)
+        //     if (item.checked) return item.value
+        //     return false;
+        // })
         const low = document.getElementById(byId.low)
         const medium = document.getElementById(byId.medium)
         const high = document.getElementById(byId.high)
@@ -86,6 +91,14 @@ const UIController = (function () {
         }
     }
 
+    const handleCompletedPercentage = () => {
+        let val = document.querySelector(selectors.completedPercentage).value
+        if(statusChecked() === 'Completed') {
+            return val = 100;
+        }
+        return val;
+    }
+
     return {
         getSelectors() {
             return selectors
@@ -131,8 +144,6 @@ const UIController = (function () {
             // document.getElementById(byId.new).checked = false;
             // document.getElementById(byId.inProgress).checked = false;
             // document.getElementById(byId.completed).checked = false;
-            console.log(document.getElementsByName('priority'))
-
         },
         showTotalTaskCount(tasksCount) {
             document.querySelector(selectors.total).textContent = tasksCount;
@@ -152,7 +163,7 @@ const UIController = (function () {
                 endAt: document.querySelector(selectors.endAt).value,
                 priority: priorityChecked(),
                 status: statusChecked(),
-                completedPercentage: document.querySelector(selectors.completedPercentage).value,
+                completedPercentage: handleCompletedPercentage()
             }
         },
         populateForm({ title, subTitle, assignedTo, startAt, endAt, priority, status, completedPercentage }) {         
@@ -164,9 +175,9 @@ const UIController = (function () {
             document.querySelector(selectors.assignedTo).value = assignedTo;
             document.querySelector(selectors.startAt).value = startAt;
             document.querySelector(selectors.endAt).value = endAt;
-            // Get checked value from priority input radio field
+            // Populate checked value from priority input radio field
             populatePriorityField(priority);
-            // Get checked value from status input radio field
+            // Populate checked value from status input radio field
             populateStatusField(status);
             document.querySelector(selectors.completedPercentage).value = completedPercentage;
         },
@@ -210,6 +221,11 @@ const UIController = (function () {
             tasks.forEach(task => {
                 // Destructuring all the properties
                 const { id, title, priority, status, endAt, assignedTo, completedPercentage } = task;
+                // Match completed status with percentage column
+                const handleCompletedPercentage = () => {
+                    return status === 'Completed' ? 100 : completedPercentage;
+                }
+
                 tasksResult += `
                     <tr>
                         <th scope="row">${id}</th>
@@ -220,7 +236,7 @@ const UIController = (function () {
                         <td>${assignedTo}</td>
                         <td>
                             <div class="progress">
-                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${completedPercentage}%" aria-valuenow="${completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${completedPercentage}%</span> </div>
+                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${handleCompletedPercentage()}%" aria-valuenow="${handleCompletedPercentage()}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${handleCompletedPercentage()}%</span> </div>
                         </div>
                         </td>
                         <td>
