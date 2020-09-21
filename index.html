@@ -14,10 +14,10 @@
     <link rel="stylesheet" href="style.css">
     <title>Task Management App | Vanilla JS</title>
     <style>
-        .completed-task{
+        .completed-task {
             text-decoration: line-through;
             font-weight: bold;
-            color:rgb(214, 69, 16);
+            color: rgb(214, 69, 16);
         }
     </style>
 </head>
@@ -34,7 +34,8 @@
                 <div class="form-group row">
                     <label for="title" class="col-sm-2 col-form-label">Title</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control title-input" id="title" placeholder="Enter your task name">
+                        <input type="text" class="form-control title-input" id="title"
+                            placeholder="Enter your task name">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -54,13 +55,13 @@
                 <div class="form-group row">
                     <label for="start" class="col-sm-2 col-form-label">Start</label>
                     <div class="col-sm-4">
-                        <input type="date" data-date="" data-date-format="DD MMMM YYYY" class="form-control start-date" id="start"
-                            placeholder="Enter name whom you have to assign to">
+                        <input type="date" data-date="" data-date-format="DD MMMM YYYY" class="form-control start-date"
+                            id="start" placeholder="Enter name whom you have to assign to">
                     </div>
                     <label for="end" class="col-sm-2 col-form-label">End</label>
                     <div class="col-sm-4">
-                        <input type="date" data-date="" data-date-format="DD MMMM YYYY" class="form-control end-date" id="end"
-                            placeholder="Enter name whom you have to assign to">
+                        <input type="date" data-date="" data-date-format="DD MMMM YYYY" class="form-control end-date"
+                            id="end" placeholder="Enter name whom you have to assign to">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -71,7 +72,7 @@
                             <label class="form-check-label mr-5" for="high">
                                 High
                             </label>
-                            <input class="form-check-input" name="priority" type="radio" value="Medium" id="medium" checked>
+                            <input class="form-check-input" name="priority" type="radio" value="Medium" id="medium">
                             <label class="form-check-label mr-5" for="medium">
                                 Medium
                             </label>
@@ -86,11 +87,12 @@
                     <div class="col-sm-2">Status</div>
                     <div class="col-sm-10">
                         <div class="form-check">
-                            <input class="form-check-input" name="status" type="radio" value="New" id="new" checked>
+                            <input class="form-check-input" name="status" type="radio" value="New" id="new">
                             <label class="form-check-label mr-5" for="new">
                                 New
                             </label>
-                            <input class="form-check-input" name="status" type="radio" value="In Progress" id="in-progress">
+                            <input class="form-check-input" name="status" type="radio" value="In Progress"
+                                id="in-progress">
                             <label class="form-check-label mr-5" for="in-progress">
                                 In Progress
                             </label>
@@ -101,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-group row">
                     <div class="col-sm-6 col-md-4">Completed in Percentage</div>
                     <input class="ml-3 percentage-range" id="char-range" type="range" min="1" max="100" value="50">
@@ -122,25 +124,25 @@
                 <div class="col text-left">Total: <span class="total"></span> </div>
                 <div class="col text-primary text-left">New: <span class="new"></span> </div>
                 <div class="col text-success text-left">In Progress: <span class="in-progress"></span> </div>
-                <div class="col text-danger text-left">Completed: <span class="completed"></span> </div>                
+                <div class="col text-danger text-left">Completed: <span class="completed"></span> </div>
             </div>
-            
+
             <table class="table table-striped">
                 <thead>
-                  <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Priority</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Due Date</th>
-                    <th scope="col">Assigned To</th>
-                    <th scope="col">Completed (%)</th>
-                    <th scope="col">Actions</th>
-                  </tr>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Due Date</th>
+                        <th scope="col">Assigned To</th>
+                        <th scope="col">Completed (%)</th>
+                        <th scope="col">Actions</th>
+                    </tr>
                 </thead>
 
                 <tbody id="task-body"></tbody>
-              
+
             </table>
         </div>
 
@@ -149,7 +151,10 @@
     <footer class="text-center">
         <p>Developed by <span><a href="https://github.com/bdmostafa" target="_blank">Mostafa</a> </span> </p>
     </footer>
-    <script src="app.js"></script>
+    <script src="js/Storage.js"></script>
+    <script src="js/Task.js"></script>
+    <script src="js/UI.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 
 </html>
