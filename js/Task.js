@@ -2,6 +2,7 @@
 const TaskController = (function (Storage) {
     let data = {
         tasks: Storage.getTasks(),
+        // Fake data ==========================
         // [
         //     {
         //         id: 1,
@@ -98,7 +99,6 @@ const TaskController = (function (Storage) {
         },
         deleteTask(targetedTask) {
             data.tasks = data.tasks.filter(task => task.id !== targetedTask.id);
-            // console.log(data.tasks)
         },
         // Destructuring argument taskInfo
         addTasks({
@@ -131,10 +131,6 @@ const TaskController = (function (Storage) {
                 completedPercentage
             };
 
-            // When status value is completed, completedPercentage value will be 100 by default
-            // if(status === 'Completed') {
-            //     task.completedPercentage = 100
-            // }
             // data.tasks.push(task);
             // console.log(task)
 

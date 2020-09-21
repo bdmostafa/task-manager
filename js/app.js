@@ -1,7 +1,3 @@
-// import { StorageConroller } from './Storage';
-// import { TaskController } from './Task';
-// import { UIController } from './UI';
-
 // Function to combine between TaskController and UIController ================================================
 const AppController = ((Task, UI, Storage) => {
 
