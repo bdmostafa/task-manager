@@ -27,9 +27,6 @@ const AppController = ((Task, UI, Storage) => {
         // Get all data of a task from UI from
         const taskInfo = UI.getTaskInput();
 
-        // Validation all the fields
-        // UI.validateForm(taskInfo);
-
         // Destructuring taskInfo properties
         const {
             title,
@@ -100,7 +97,6 @@ const AppController = ((Task, UI, Storage) => {
         const inputValueToUpdate = UI.getTaskInput();
         // Updating value to data center
         const updatedTask = Task.updateItem(inputValueToUpdate);
-        console.log(updatedTask)
         // Update to localStorage
         Storage.updateTask(updatedTask);
         // Clear Fields
