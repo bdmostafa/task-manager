@@ -1,5 +1,5 @@
 // Function to local storage ========================================================================
-const StorageConroller = (function () {
+export const StorageConroller = (() => {
     return {
         addTask(task) {
             let tasks;

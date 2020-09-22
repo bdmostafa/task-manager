@@ -1,5 +1,5 @@
 // Function to connect with task data into UI DOM ============================================================
-const UIController = (function () {
+export const UIController = (() => {
     // Create object for all the necessary selectors
     const selectors = {
         id: '.id',

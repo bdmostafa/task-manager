@@ -1,3 +1,7 @@
+const { StorageConroller } = require("./Storage");
+const { TaskController } = require("./Task");
+const { UIController } = require("./UI");
+
 // Function to combine between TaskController and UIController ================================================
 const AppController = ((Task, UI, Storage) => {
 

@@ -1,5 +1,6 @@
+const { StorageConroller } = require("./Storage");
 // Function to control task data
-const TaskController = (function (Storage) {
+export const TaskController = ((Storage) => {
     let data = {
         tasks: Storage.getTasks(),
         // Fake data ==========================
