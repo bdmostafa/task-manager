@@ -14,7 +14,7 @@ const UIController = (function () {
         startAt: '.start-date',
         endAt: '.end-date',
         percentageRange: '.percentage-range',
-        completedPercentage: '.percentage-num',
+        percentageNum: '.percentage-num',
         total: '.total',
         new: '.new',
         inProgress: '.in-progress',
@@ -22,52 +22,37 @@ const UIController = (function () {
         alert: '.alert'
     }
 
-    const byId = {
-        high: 'high',
-        medium: 'medium',
-        low: 'low',
-        new: 'new',
-        inProgress: 'in-progress',
-        completed: 'completed'
-    }
-
-    const priorityChecked = () => {
-        // document.getElementsByName('priority').forEach((item) => {
-        //     console.log(item, item.value)
-        //     if (item.checked) return item.value
-        //     return false;
-        // })
-        const low = document.getElementById(byId.low)
-        const medium = document.getElementById(byId.medium)
-        const high = document.getElementById(byId.high)
-
-        if (low.checked) return low.value
-        if (high.checked) return high.value
-        if (medium.checked) return medium.value
+    const isChecked = (inputName) => {
+        const arrField = document.getElementsByName(inputName)
+        for (let field of arrField) {
+            if (field.checked) return field.value;
+        }
         return false;
     }
 
-    const statusChecked = () => {
-        const newTask = document.getElementById(byId.new)
-        const inProgress = document.getElementById(byId.inProgress)
-        const completed = document.getElementById(byId.completed)
-
-        if (newTask.checked) return newTask.value
-        if (inProgress.checked) return inProgress.value
-        if (completed.checked) return completed.value
-        return false;
-    }
-
-    const populatePriorityField = (priority) => {
-        if(priority === 'Low') return document.getElementById(byId.low).checked = true;
-        if(priority === 'Medium') return document.getElementById(byId.medium).checked = true;
-        if(priority === 'High') return document.getElementById(byId.high).checked = true;
-    }
-
-    const populateStatusField = (status) => {
-        if(status === 'New') return document.getElementById(byId.new).checked = true;
-        if(status === 'In Progress') return document.getElementById(byId.inProgress).checked = true;
-        if(status === 'Completed') return document.getElementById(byId.completed).checked = true;
+    const populateRadioBtn = (inputName) => {
+        switch (inputName) {
+            // Check status input
+            case 'Low':
+                document.querySelector('#low').checked = true;
+                break;
+            case 'Medium':
+                document.querySelector('#medium').checked = true;
+                break;
+            case 'High':
+                document.querySelector('#high').checked = true;
+                break;
+            // Check priority input
+            case 'New':
+                document.querySelector('#new').checked = true;
+                break;
+            case 'In Progress':
+                document.querySelector('#in-progress').checked = true;
+                break;
+            case 'Completed':
+                document.querySelector('#completed').checked = true;
+                break;
+        }
     }
 
     const displayTaskArea = () => {
@@ -91,12 +76,45 @@ const UIController = (function () {
         }
     }
 
-    const handleCompletedPercentage = () => {
-        let val = document.querySelector(selectors.completedPercentage).value
-        if(statusChecked() === 'Completed') {
+    const handleCompletedPercentage = (status) => {
+        let val = document.querySelector(selectors.percentageNum).value
+        if (isChecked(status) === 'Completed') {
             return val = 100;
         }
         return val;
+    }
+
+    const styleProgressBar = (completedPercentage) => {
+        if (completedPercentage >= 75) return 'success';
+        else if (completedPercentage >= 50) return 'info';
+        else if (completedPercentage >= 25) return 'warning'
+        return 'danger';
+    }
+
+    const taskOutputTemplate = ({ id, title, assignedTo, endAt, priority, status, completedPercentage }) => {
+        return `
+            <tr>
+                <th scope="row">${id}</th>
+                <td>${title}</td>
+                <td><span class="badge badge-pill badge-${handleBadgeColorPriority(priority)}">${priority}</span></td>
+                <td class=${handleStyleCompletedStatus(status)
+                    ? 'completed-task'
+                    : ''
+                }>${status}</td>
+                <td>${endAt}</td>
+                <td>${assignedTo}</td>
+                <td>
+                    <div class="progress">
+                    <div class="progress-bar progress-bar-striped bg-${styleProgressBar(completedPercentage)}" role="progressbar" style="width: ${completedPercentage}%" aria-valuenow="${completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${completedPercentage}%</span> </div>
+                </div>
+                </td>
+                <td>
+                    <i class="fas fa-edit text-primary"></i>
+                    <i class="fas fa-check-square text-success"></i>
+                    <i class="fas fa-trash-alt text-danger"></i>
+                </td>
+            </tr>
+        `
     }
 
     return {
@@ -138,12 +156,8 @@ const UIController = (function () {
             document.querySelector(selectors.endAt).value = '';
             document.getElementsByName('priority').forEach(i => i.checked = false);
             document.getElementsByName('status').forEach(i => i.checked = false);
-            // document.getElementById(byId.high).checked = false;
-            // document.getElementById(byId.medium).checked = false;
-            // document.getElementById(byId.low).checked = false;
-            // document.getElementById(byId.new).checked = false;
-            // document.getElementById(byId.inProgress).checked = false;
-            // document.getElementById(byId.completed).checked = false;
+            document.querySelector(selectors.percentageNum).value = 10;
+            document.querySelector(selectors.percentageRange).value = 10;
         },
         showTotalTaskCount(tasksCount) {
             document.querySelector(selectors.total).textContent = tasksCount;
@@ -161,12 +175,12 @@ const UIController = (function () {
                 assignedTo: document.querySelector(selectors.assignedTo).value,
                 startAt: document.querySelector(selectors.startAt).value,
                 endAt: document.querySelector(selectors.endAt).value,
-                priority: priorityChecked(),
-                status: statusChecked(),
-                completedPercentage: handleCompletedPercentage()
+                priority: isChecked('priority'),
+                status: isChecked('status'),
+                completedPercentage: handleCompletedPercentage('status')
             }
         },
-        populateForm({ title, subTitle, assignedTo, startAt, endAt, priority, status, completedPercentage }) {         
+        populateForm({ title, subTitle, assignedTo, startAt, endAt, priority, status, completedPercentage }) {
             // Display Update and Back button on the form
             this.showUpdateState();
             // Populate all the fields
@@ -175,78 +189,32 @@ const UIController = (function () {
             document.querySelector(selectors.assignedTo).value = assignedTo;
             document.querySelector(selectors.startAt).value = startAt;
             document.querySelector(selectors.endAt).value = endAt;
-            // Populate checked value from priority input radio field
-            populatePriorityField(priority);
-            // Populate checked value from status input radio field
-            populateStatusField(status);
-            document.querySelector(selectors.completedPercentage).value = completedPercentage;
+            // Populate checked value from priority and status input radio field
+            populateRadioBtn(priority);
+            populateRadioBtn(status);
+            document.querySelector(selectors.percentageNum).value = completedPercentage;
+            document.querySelector(selectors.percentageRange).value = completedPercentage;
         },
-        populateTask({ id, title, assignedTo, endAt, priority, status, completedPercentage }) { // Destructuring parameter task
+        populateTask({ id, title, assignedTo, endAt, priority, status, completedPercentage }) {
             // Display task area when new task is added
             displayTaskArea();
             let taskResult = '';
-            taskResult += `
-                    <tr>
-                        <th scope="row">${id}</th>
-                        <td >${title}</td>
-                        <td><span class="badge badge-pill badge-${handleBadgeColorPriority(priority)}">${priority}</span></td>
-                        <td class=${handleStyleCompletedStatus(status) ? 'completed-task' : ''}>${status}</td>
-                        <td>${endAt}</td>
-                        <td>${assignedTo}</td>
-                        <td>
-                            <div class="progress">
-                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${completedPercentage}%" aria-valuenow="${completedPercentage}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${completedPercentage}%</span> </div>
-                        </div>
-                        </td>
-                        <td>
-                            <i class="fas fa-edit text-primary"></i>
-                            <i class="fas fa-check-square text-success"></i>
-                            <i class="fas fa-trash-alt text-danger"></i>
-                        </td>
-                    </tr>
-                `
-            // Insert taskResult after all the elements before end of the target div (taskBody)
-            document.querySelector(selectors.taskBody).insertAdjacentHTML("beforeend", taskResult);
+            // Generate HTML tamplate
+            taskResult += taskOutputTemplate({ id, title, assignedTo, endAt, priority, status, completedPercentage });
+                // Insert taskResult after all the elements before end of the target div (taskBody)
+                document.querySelector(selectors.taskBody).insertAdjacentHTML("beforeend", taskResult);
         },
         populateAllTask(tasks) {
-            // console.log(tasks);
             // Handle display task table area
-            if (tasks.length > 0) {
-                displayTaskArea();
-            } else {
-                hideTaskArea();
-            }
+            if (tasks.length > 0) displayTaskArea();
+            else hideTaskArea();
 
             let tasksResult = '';
             tasks.forEach(task => {
                 // Destructuring all the properties
                 const { id, title, priority, status, endAt, assignedTo, completedPercentage } = task;
-                // Match completed status with percentage column
-                const handleCompletedPercentage = () => {
-                    return status === 'Completed' ? 100 : completedPercentage;
-                }
-
-                tasksResult += `
-                    <tr>
-                        <th scope="row">${id}</th>
-                        <td>${title}</td>
-                        <td><span class="badge badge-pill badge-${handleBadgeColorPriority(priority)}">${priority}</span></td>
-                        <td class=${handleStyleCompletedStatus(status) ? 'completed-task' : ''}>  ${status}</td>
-                        <td >${endAt}</td>
-                        <td>${assignedTo}</td>
-                        <td>
-                            <div class="progress">
-                            <div class="progress-bar-striped bg-success" role="progressbar" style="width: ${handleCompletedPercentage()}%" aria-valuenow="${handleCompletedPercentage()}" aria-valuemin="0" aria-valuemax="100"> <span class="text-black font-weight-bold">${handleCompletedPercentage()}%</span> </div>
-                        </div>
-                        </td>
-                        <td>
-                            <i class="fas fa-edit text-primary"></i>
-                            <i class="fas fa-check-square text-success"></i>
-                            <i class="fas fa-trash-alt text-danger"></i>
-                        </td>
-                    </tr>
-                `
-                // console.log(task)
+                // Generate HTML tamplate
+                tasksResult += taskOutputTemplate({ id, title, assignedTo, endAt, priority, status, completedPercentage });
             });
             document.querySelector(selectors.taskBody).innerHTML = tasksResult;
 
