@@ -109,7 +109,6 @@ const AppController = ((Task, UI, Storage) => {
         UI.showDefaultWithBackBtn();
         // Getting tasks
         const tasks = Task.getTasks();
-        console.log(tasks)
         // Update UI
         UI.populateAllTask(tasks);
         // Task count function calling

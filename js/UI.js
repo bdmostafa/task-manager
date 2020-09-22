@@ -31,44 +31,59 @@ const UIController = (function () {
         completed: 'completed'
     }
 
-    const priorityChecked = () => {
-        // document.getElementsByName('priority').forEach((item) => {
-        //     console.log(item, item.value)
-        //     if (item.checked) return item.value
-        //     return false;
-        // })
-        const low = document.getElementById(byId.low)
-        const medium = document.getElementById(byId.medium)
-        const high = document.getElementById(byId.high)
-
-        if (low.checked) return low.value
-        if (high.checked) return high.value
-        if (medium.checked) return medium.value
+    const isChecked = (inputName) => {
+        const arrField = document.getElementsByName(inputName)
+        for (let field of arrField) {
+            if (field.checked) return field.value;
+        }
         return false;
     }
 
-    const statusChecked = () => {
-        const newTask = document.getElementById(byId.new)
-        const inProgress = document.getElementById(byId.inProgress)
-        const completed = document.getElementById(byId.completed)
+    // const priorityChecked = () => {
+    //     const priority = document.getElementsByName('priority')
+    //     for (let i of priority) {
+    //         if (i.checked) return i.value;
+    //     }
+    //     return false;
 
-        if (newTask.checked) return newTask.value
-        if (inProgress.checked) return inProgress.value
-        if (completed.checked) return completed.value
-        return false;
+    //     // https://stackoverflow.com/questions/37527213/loop-radio-button-form-javascript
+
+    //     // const low = document.getElementById(byId.low)
+    //     // const medium = document.getElementById(byId.medium)
+    //     // const high = document.getElementById(byId.high)
+
+    //     // if (low.checked) return low.value
+    //     // if (high.checked) return high.value
+    //     // if (medium.checked) return medium.value
+    //     // return false;
+    // }
+
+    // const statusChecked = () => {
+    //     const priority = document.getElementsByName('priority')
+    //     const newTask = document.getElementById(byId.new)
+    //     const inProgress = document.getElementById(byId.inProgress)
+    //     const completed = document.getElementById(byId.completed)
+
+    //     if (newTask.checked) return newTask.value
+    //     if (inProgress.checked) return inProgress.value
+    //     if (completed.checked) return completed.value
+    //     return false;
+    // }
+
+    const populateRadioBtn = (inputName) => {
+        if (inputName === 'Low') return document.getElementById(byId.low).checked = true;
+        if (inputName === 'Medium') return document.getElementById(byId.medium).checked = true;
+        if (inputName === 'High') return document.getElementById(byId.high).checked = true;
+        if (inputName === 'New') return document.getElementById(byId.new).checked = true;
+        if (inputName === 'In Progress') return document.getElementById(byId.inProgress).checked = true;
+        if (inputName === 'Completed') return document.getElementById(byId.completed).checked = true;
     }
 
-    const populatePriorityField = (priority) => {
-        if(priority === 'Low') return document.getElementById(byId.low).checked = true;
-        if(priority === 'Medium') return document.getElementById(byId.medium).checked = true;
-        if(priority === 'High') return document.getElementById(byId.high).checked = true;
-    }
-
-    const populateStatusField = (status) => {
-        if(status === 'New') return document.getElementById(byId.new).checked = true;
-        if(status === 'In Progress') return document.getElementById(byId.inProgress).checked = true;
-        if(status === 'Completed') return document.getElementById(byId.completed).checked = true;
-    }
+    // const populateStatusField = (status) => {
+    //     if (status === 'New') return document.getElementById(byId.new).checked = true;
+    //     if (status === 'In Progress') return document.getElementById(byId.inProgress).checked = true;
+    //     if (status === 'Completed') return document.getElementById(byId.completed).checked = true;
+    // }
 
     const displayTaskArea = () => {
         document.querySelector(selectors.displayTaskArea).style.display = 'block';
@@ -93,7 +108,7 @@ const UIController = (function () {
 
     const handleCompletedPercentage = () => {
         let val = document.querySelector(selectors.completedPercentage).value
-        if(statusChecked() === 'Completed') {
+        if (isChecked() === 'Completed') {
             return val = 100;
         }
         return val;
@@ -138,12 +153,6 @@ const UIController = (function () {
             document.querySelector(selectors.endAt).value = '';
             document.getElementsByName('priority').forEach(i => i.checked = false);
             document.getElementsByName('status').forEach(i => i.checked = false);
-            // document.getElementById(byId.high).checked = false;
-            // document.getElementById(byId.medium).checked = false;
-            // document.getElementById(byId.low).checked = false;
-            // document.getElementById(byId.new).checked = false;
-            // document.getElementById(byId.inProgress).checked = false;
-            // document.getElementById(byId.completed).checked = false;
         },
         showTotalTaskCount(tasksCount) {
             document.querySelector(selectors.total).textContent = tasksCount;
@@ -161,12 +170,12 @@ const UIController = (function () {
                 assignedTo: document.querySelector(selectors.assignedTo).value,
                 startAt: document.querySelector(selectors.startAt).value,
                 endAt: document.querySelector(selectors.endAt).value,
-                priority: priorityChecked(),
-                status: statusChecked(),
+                priority: isChecked('priority'),
+                status: isChecked('status'),
                 completedPercentage: handleCompletedPercentage()
             }
         },
-        populateForm({ title, subTitle, assignedTo, startAt, endAt, priority, status, completedPercentage }) {         
+        populateForm({ title, subTitle, assignedTo, startAt, endAt, priority, status, completedPercentage }) {
             // Display Update and Back button on the form
             this.showUpdateState();
             // Populate all the fields
@@ -175,10 +184,9 @@ const UIController = (function () {
             document.querySelector(selectors.assignedTo).value = assignedTo;
             document.querySelector(selectors.startAt).value = startAt;
             document.querySelector(selectors.endAt).value = endAt;
-            // Populate checked value from priority input radio field
-            populatePriorityField(priority);
-            // Populate checked value from status input radio field
-            populateStatusField(status);
+            // Populate checked value from priority and status input radio field
+            populateRadioBtn(priority);
+            populateRadioBtn(status);
             document.querySelector(selectors.completedPercentage).value = completedPercentage;
         },
         populateTask({ id, title, assignedTo, endAt, priority, status, completedPercentage }) { // Destructuring parameter task
